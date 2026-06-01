@@ -6,49 +6,131 @@
 
 <style>
 
-body{
+*{
     margin:0;
-    font-family:Arial, sans-serif;
-    background:#f4f6f9;
+    padding:0;
+    box-sizing:border-box;
 }
 
-.header{
-    background:#1f2937;
-    color:white;
-    padding:20px;
-    font-size:24px;
-    font-weight:bold;
+body{
+    font-family:"Segoe UI",Arial,sans-serif;
+    background:#0b1220;
+    color:#e5e7eb;
 }
+
+/* =====================================
+   HEADER
+===================================== */
+
+.header{
+    background:#111827;
+    border-bottom:1px solid #1f2937;
+    padding:20px 30px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.logo{
+    font-size:26px;
+    font-weight:700;
+    color:#3b82f6;
+}
+
+.subtitle{
+    color:#94a3b8;
+    font-size:14px;
+}
+
+/* =====================================
+   KPI BAR
+===================================== */
+
+.kpiRow{
+    display:grid;
+    grid-template-columns:
+        repeat(4,1fr);
+    gap:20px;
+    margin:20px;
+}
+
+.kpi{
+    background:#111827;
+    border:1px solid #1f2937;
+    border-radius:12px;
+    padding:20px;
+}
+
+.kpiValue{
+    font-size:34px;
+    font-weight:700;
+    color:#60a5fa;
+}
+
+.kpiLabel{
+    color:#94a3b8;
+    margin-top:5px;
+}
+
+/* =====================================
+   LAYOUT
+===================================== */
 
 .container{
     padding:20px;
 }
 
-.card{
-    background:white;
-    border-radius:10px;
-    padding:20px;
-    margin-bottom:20px;
-    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+.grid{
+    display:grid;
+    grid-template-columns:
+        1fr 1fr;
+    gap:20px;
 }
 
-h2{
-    margin-top:0;
+/* =====================================
+   CARDS
+===================================== */
+
+.card{
+    background:#111827;
+    border:1px solid #1f2937;
+    border-radius:14px;
+    padding:20px;
 }
+
+.card h2{
+    margin-bottom:15px;
+    color:#f9fafb;
+}
+
+/* =====================================
+   INPUTS
+===================================== */
 
 input{
     width:100%;
-    padding:10px;
-    margin-top:10px;
-    margin-bottom:10px;
-    box-sizing:border-box;
+    padding:12px;
+    border:1px solid #374151;
+    border-radius:8px;
+    background:#1f2937;
+    color:white;
+    margin-bottom:12px;
 }
+
+input[type=file]{
+    padding:10px;
+}
+
+/* =====================================
+   BUTTONS
+===================================== */
 
 button{
     border:none;
-    border-radius:5px;
-    padding:10px 15px;
+    border-radius:8px;
+    padding:10px 18px;
     cursor:pointer;
+    font-weight:600;
 }
 
 .primary{
@@ -56,9 +138,17 @@ button{
     color:white;
 }
 
+.primary:hover{
+    background:#1d4ed8;
+}
+
 .approve{
     background:#16a34a;
     color:white;
+}
+
+.approve:hover{
+    background:#15803d;
 }
 
 .reject{
@@ -66,43 +156,158 @@ button{
     color:white;
 }
 
+.reject:hover{
+    background:#b91c1c;
+}
+
+/* =====================================
+   TBM CARDS
+===================================== */
+
 .pendingItem,
 .onlineItem,
 .campaignItem{
-    border:1px solid #ddd;
-    padding:10px;
-    margin-bottom:10px;
-    border-radius:5px;
+    background:#1f2937;
+    border:1px solid #374151;
+    border-radius:8px;
+    padding:8px 12px;
+    margin-bottom:8px;
+    font-size:13px;
 }
 
+/* =====================================
+   STATUS BADGES
+===================================== */
+
+.badge{
+    display:inline-block;
+    padding:4px 10px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:600;
+}
+
+.online{
+    background:#14532d;
+    color:#86efac;
+}
+
+.pending{
+    background:#78350f;
+    color:#fde68a;
+}
+
+.completed{
+    background:#0f766e;
+    color:#99f6e4;
+}
+
+/* =====================================
+   LOGS
+===================================== */
+.fullWidth{
+    grid-column: 1 / -1;
+}
+.card.fullWidth{
+    width:100%;
+}
 #logs{
-    background:black;
-    color:#00ff00;
-    font-family:monospace;
+    background:#020617;
+    border:1px solid #334155;
+    border-radius:12px;
     height:350px;
+    width:100%;
     overflow-y:auto;
-    padding:10px;
+    padding:15px;
+    color:#22c55e;
+    font-family:Consolas,monospace;
+    font-size:13px;
 }
 
-.status{
-    padding:10px;
-    background:#eef;
-    border-radius:5px;
-    margin-bottom:10px;
+#campaignList{
+    max-height:220px;
+    overflow-y:auto;
+    padding-right:5px;
 }
 
+#campaignList::-webkit-scrollbar{
+    width:8px;
+}
+
+#campaignList::-webkit-scrollbar-thumb{
+    background:#475569;
+    border-radius:10px;
+}
+/* =====================================
+   RESPONSIVE
+===================================== */
+
+@media(max-width:1000px){
+
+    .grid{
+        grid-template-columns:1fr;
+    }
+
+    .kpiRow{
+        grid-template-columns:
+            1fr 1fr;
+    }
+}
 </style>
 
 </head>
 
 <body>
-
 <div class="header">
-Automotive FOTA Dashboard
+
+    <div>
+
+        <div class="logo">
+            Bosch FOTA Operations Center
+        </div>
+
+        <div class="subtitle">
+            Firmware Over-The-Air Campaign Management
+        </div>
+
+    </div>
+
+</div>
+
+<div class="kpiRow">
+
+    <div class="kpi">
+        <div id="onlineCount" class="kpiValue">0</div>
+        <div class="kpiLabel">
+            Connected TBMs
+        </div>
+    </div>
+
+    <div class="kpi">
+        <div id="pendingCount" class="kpiValue">0</div>
+        <div class="kpiLabel">
+            Pending Requests
+        </div>
+    </div>
+
+    <div class="kpi">
+        <div id="campaignCount" class="kpiValue">0</div>
+        <div class="kpiLabel">
+            Campaigns
+        </div>
+    </div>
+
+    <div class="kpi">
+        <div class="kpiValue">ONLINE</div>
+        <div class="kpiLabel">
+            System Status
+        </div>
+    </div>
+
 </div>
 
 <div class="container">
-
+<div class="grid">
 <!-- Pending TBMs -->
 
 <div class="card">
@@ -168,30 +373,30 @@ No Campaigns
 </div>
 
 </div>
+</div>
 
-<!-- Logs -->
+<div style="height:0.6cm;"></div>
 
-<div class="card">
+<div>
 
-<h2>Live Logs</h2>
+</div>
 
-<div id="logs"></div>
+<div class="grid">
+
+<div class="card fullWidth">
+
+    <h2>Live Activity Console</h2>
+
+    <div id="logs"></div>
 
 </div>
 
 </div>
 
 <script>
-
-/*
-LOCAL:
-http://localhost:8000
-
-RENDER:
-https://your-app.onrender.com
-*/
-
-const SERVER = "https://fota-demo.onrender.com";
+    
+const SERVER =
+"https://fota-demo.onrender.com";
 
 
 /* ==========================
@@ -482,22 +687,11 @@ async function loadCampaigns(){
         `
         <div class="campaignItem">
 
-            <b>${c.campaign_name}</b>
+        <b>${c.campaign_name}</b><br>
 
-            <br>
+        VIN: ${c.vin}<br>
 
-            VIN :
-            ${c.vin}
-
-            <br>
-
-            Firmware :
-            ${c.firmware_file}
-
-            <br>
-
-            Status :
-            ${c.status}
+        Status: ${c.status}
 
         </div>
         `;
