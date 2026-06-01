@@ -398,6 +398,25 @@ No Campaigns
 const SERVER =
 "https://fota-demo.onrender.com";
 
+async function deleteCampaign(id){
+
+    if(!confirm(
+        "Delete this campaign?"
+    )){
+        return;
+    }
+
+    await fetch(
+        SERVER +
+        "/campaign/" +
+        id,
+        {
+            method:"DELETE"
+        }
+    );
+
+    loadCampaigns();
+}
 
 /* ==========================
    PENDING TBMS
@@ -412,6 +431,11 @@ async function loadPending(){
 
     const data =
     await response.json();
+
+    document.getElementById(
+    "pendingCount"
+    ).innerText =
+    data.pending.length;
 
     const div =
     document.getElementById(
@@ -473,6 +497,11 @@ async function loadTBMs(){
 
     const data =
     await response.json();
+
+    document.getElementById(
+    "onlineCount"
+    ).innerText =
+    data.online_tbms.length;
 
     const div =
     document.getElementById(
@@ -666,6 +695,11 @@ async function loadCampaigns(){
     const campaigns =
     await response.json();
 
+    document.getElementById(
+    "campaignCount"
+    ).innerText =
+    campaigns.length;
+
     const div =
     document.getElementById(
         "campaignList"
@@ -683,16 +717,37 @@ async function loadCampaigns(){
 
     campaigns.forEach(c=>{
 
-        div.innerHTML +=
-        `
+        div.innerHTML += `
         <div class="campaignItem">
-
-        <b>${c.campaign_name}</b><br>
-
-        VIN: ${c.vin}<br>
-
-        Status: ${c.status}
-
+        
+            <div style="
+                display:flex;
+                justify-content:space-between;
+                align-items:flex-start;
+            ">
+        
+                <div>
+                
+                    <b>${c.campaign_name}</b><br>
+                
+                    VIN : ${c.vin}<br>
+                
+                    Firmware : ${c.firmware_file}<br>
+                
+                    Status : ${c.status}
+                
+                </div>
+            
+                <button
+                    class="deleteBtn"
+                    onclick="deleteCampaign('${c.id}')">
+            
+                    Delete
+            
+                </button>
+            
+            </div>
+        
         </div>
         `;
     });
