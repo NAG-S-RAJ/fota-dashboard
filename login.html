@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>FOTA Login</title>
+
+<style>
+
+body{
+    margin:0;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#07152e;
+    font-family:Segoe UI;
+}
+
+.loginCard{
+
+    width:380px;
+
+    background:#0d1f3f;
+
+    padding:40px;
+
+    border-radius:12px;
+
+    box-shadow:0 0 20px rgba(0,0,0,.4);
+}
+
+h1{
+
+    color:#4e8cff;
+    margin-bottom:30px;
+}
+
+input{
+
+    width:100%;
+    padding:12px;
+    margin-bottom:15px;
+
+    background:#1b2d4a;
+
+    border:1px solid #324a73;
+
+    border-radius:6px;
+
+    color:white;
+}
+
+button{
+
+    width:100%;
+
+    padding:12px;
+
+    border:none;
+
+    border-radius:6px;
+
+    background:#2979ff;
+
+    color:white;
+
+    font-size:16px;
+
+    cursor:pointer;
+}
+
+.error{
+
+    color:#ff6666;
+
+    margin-top:10px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="loginCard">
+
+    <h1>FOTA Campaign Manager</h1>
+
+    <input
+        id="username"
+        placeholder="Username">
+
+    <input
+        id="password"
+        type="password"
+        placeholder="Password">
+
+    <button onclick="login()">
+        Login
+    </button>
+
+    <div
+        id="error"
+        class="error">
+    </div>
+
+</div>
+
+<script>
+
+function login(){
+
+    let user =
+        document.getElementById(
+            "username"
+        ).value;
+
+    let pass =
+        document.getElementById(
+            "password"
+        ).value;
+
+    if(
+        user === "admin"
+        &&
+        pass === "bosch123"
+    ){
+
+        localStorage.setItem(
+            "fota_logged_in",
+            "true"
+        );
+
+        window.location =
+            "index.html";
+    }
+    else{
+
+        document.getElementById(
+            "error"
+        ).innerText =
+            "Invalid credentials";
+    }
+}
+
+</script>
+
+</body>
+</html>
