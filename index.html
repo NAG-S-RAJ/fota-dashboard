@@ -3,7 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <title>FOTA Campaign Manager</title>
+<script>
 
+if(
+    localStorage.getItem(
+        "fota_logged_in"
+    ) !== "true"
+){
+
+    window.location =
+        "login.html";
+}
+
+</script>
 <style>
 
 *{
@@ -271,7 +283,12 @@ button{
         </div>
 
     </div>
+    <button
+onclick="logout()">
 
+Logout
+
+</button>
 </div>
 
 <div class="kpiRow">
@@ -421,6 +438,16 @@ async function deleteCampaign(id){
 /* ==========================
    PENDING TBMS
 ========================== */
+
+function logout(){
+
+    localStorage.removeItem(
+        "fota_logged_in"
+    );
+
+    window.location =
+        "login.html";
+}
 
 async function loadPending(){
 
