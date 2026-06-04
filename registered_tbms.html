@@ -34,6 +34,38 @@ body{
     padding:20px;
 }
 
+#tbmTable{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+    margin-top:20px;
+}
+
+#tbmTable th{
+
+    background:#1f2937;
+
+    color:#60a5fa;
+
+    text-align:left;
+
+    padding:12px;
+}
+
+#tbmTable td{
+
+    padding:12px;
+
+    border-top:1px solid #374151;
+}
+
+#tbmTable tr:hover{
+
+    background:#1f2937;
+}
+
 input{
 
     width:100%;
@@ -129,10 +161,29 @@ Add TBM
 
 <br>
 
-<div
-id="tbmList">
+<table id="tbmTable">
 
-</div>
+    <thead>
+
+        <tr>
+
+            <th>VIN</th>
+
+            <th>SW Version</th>
+
+            <th>Added On</th>
+
+            <th>Action</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody id="tbmList">
+
+    </tbody>
+
+</table>
 
 <script>
 
@@ -207,35 +258,29 @@ async function loadTBMs(){
     data.forEach(t=>{
 
         div.innerHTML += `
-        <div class="row">
-
-            <b>
-            ${t.vin}
-            </b>
-
-            <br>
-
-            SW Version :
-            ${t.sw_version}
-
-            <br>
-
-            Added :
-            ${t.added_on}
-
-            <br><br>
-
-            <button
-            onclick="
-            deleteTBM(
-            '${t.vin}'
-            )">
-
-            Delete
-
-            </button>
-
-        </div>
+        <tr>
+        
+            <td>${t.vin}</td>
+        
+            <td>${t.sw_version}</td>
+        
+            <td>${t.added_on}</td>
+        
+            <td>
+            
+                <button
+                onclick="
+                deleteTBM(
+                '${t.vin}'
+                )">
+            
+                Delete
+            
+                </button>
+            
+            </td>
+        
+        </tr>
         `;
     });
 }
