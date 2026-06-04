@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>
+Registered TBMs
+</title>
+
+<style>
+
+body{
+
+    font-family:
+    "Segoe UI";
+
+    background:#0b1220;
+
+    color:white;
+
+    padding:20px;
+}
+
+.card{
+
+    background:#111827;
+
+    border:1px solid #1f2937;
+
+    border-radius:12px;
+
+    padding:20px;
+}
+
+input{
+
+    width:100%;
+
+    padding:12px;
+
+    margin-bottom:10px;
+
+    border-radius:8px;
+
+    border:1px solid #374151;
+
+    background:#1f2937;
+
+    color:white;
+}
+
+button{
+
+    padding:10px 16px;
+
+    border:none;
+
+    border-radius:8px;
+
+    cursor:pointer;
+}
+
+.primary{
+
+    background:#2563eb;
+
+    color:white;
+}
+
+.table{
+
+    margin-top:20px;
+}
+
+.row{
+
+    background:#1f2937;
+
+    padding:12px;
+
+    border-radius:8px;
+
+    margin-bottom:10px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>
+Registered TBMs
+</h1>
+
+<button
+onclick="
+window.location=
+'index.html'
+">
+
+← Dashboard
+
+</button>
+
+<br><br>
+
+<div class="card">
+
+<input
+id="vin"
+placeholder="VIN">
+
+<input
+id="sw"
+placeholder="Software Version">
+
+<button
+class="primary"
+onclick="addTBM()">
+
+Add TBM
+
+</button>
+
+</div>
+
+<br>
+
+<div
+id="tbmList">
+
+</div>
+
+<script>
+
+const SERVER =
+"https://fota-demo.onrender.com";
+
+async function addTBM(){
+
+    const vin =
+    document.getElementById(
+        "vin"
+    ).value;
+
+    const sw =
+    document.getElementById(
+        "sw"
+    ).value;
+
+    await fetch(
+
+        SERVER +
+        "/register_tbm" +
+
+        "?vin=" +
+        encodeURIComponent(vin) +
+
+        "&sw_version=" +
+        encodeURIComponent(sw),
+
+        {
+            method:"POST"
+        }
+    );
+
+    loadTBMs();
+}
+
+async function deleteTBM(vin){
+
+    await fetch(
+
+        SERVER +
+        "/registered_tbm/" +
+        vin,
+
+        {
+            method:"DELETE"
+        }
+    );
+
+    loadTBMs();
+}
+
+async function loadTBMs(){
+
+    const response =
+    await fetch(
+        SERVER +
+        "/registered_tbms"
+    );
+
+    const data =
+    await response.json();
+
+    const div =
+    document.getElementById(
+        "tbmList"
+    );
+
+    div.innerHTML = "";
+
+    data.forEach(t=>{
+
+        div.innerHTML += `
+        <div class="row">
+
+            <b>
+            ${t.vin}
+            </b>
+
+            <br>
+
+            SW Version :
+            ${t.sw_version}
+
+            <br>
+
+            Added :
+            ${t.added_on}
+
+            <br><br>
+
+            <button
+            onclick="
+            deleteTBM(
+            '${t.vin}'
+            )">
+
+            Delete
+
+            </button>
+
+        </div>
+        `;
+    });
+}
+
+loadTBMs();
+
+</script>
+
+</body>
+
+</html>
