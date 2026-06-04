@@ -61,7 +61,7 @@ body{
 .kpiRow{
     display:grid;
     grid-template-columns:
-        repeat(4,1fr);
+        repeat(3,1fr);
     gap:20px;
     margin:20px;
 }
@@ -300,6 +300,23 @@ button{
             1fr 1fr;
     }
 }
+
+select{
+
+    width:100%;
+
+    padding:12px;
+
+    border:1px solid #374151;
+
+    border-radius:8px;
+
+    background:#1f2937;
+
+    color:white;
+
+    margin-bottom:12px;
+}
 </style>
 
 </head>
@@ -350,12 +367,6 @@ button{
         </div>
     </div>
 
-    <div class="kpi">
-        <div id="pendingCount" class="kpiValue">0</div>
-        <div class="kpiLabel">
-            Pending Requests
-        </div>
-    </div>
 
     <div class="kpi">
         <div id="campaignCount" class="kpiValue">0</div>
@@ -379,11 +390,27 @@ button{
 
 <div class="card">
 
-<h2>Pending TBM Requests</h2>
+    <h2>Latest Software Release</h2>
 
-<div id="pendingList">
-No Pending Requests
-</div>
+    <input
+        type="text"
+        id="targetVersion"
+        placeholder="Target SW Version"
+        style="width:100%; margin-bottom:10px;">
+
+    <input
+        type="file"
+        id="releaseFirmware"
+        style="width:100%; margin-bottom:10px;">
+
+    <button
+        class="primary"
+        onclick="saveRelease()"
+        style="width:100%;">
+
+        Save Release
+
+    </button>
 
 </div>
 
@@ -405,10 +432,14 @@ No Connected TBMs
 
 <h2>Create Campaign</h2>
 
-<input
-type="text"
-id="vin"
-placeholder="Target VIN">
+<select
+id="vin">
+
+<option value="">
+Select VIN
+</option>
+
+</select>
 
 <input
 type="text"
@@ -499,6 +530,70 @@ async function deleteCampaign(id){
     loadCampaigns();
 }
 
+async function saveRelease(){
+
+    const version =
+    document.getElementById(
+        "targetVersion"
+    ).value;
+
+    const file =
+    document.getElementById(
+        "releaseFirmware"
+    ).files[0];
+
+    if(
+        !version ||
+        !file
+    ){
+        alert(
+            "Fill all fields"
+        );
+        return;
+    }
+
+    const formData =
+    new FormData();
+
+    formData.append(
+        "file",
+        file
+    );
+
+    const upload =
+    await fetch(
+        SERVER + "/upload",
+        {
+            method:"POST",
+            body:formData
+        }
+    );
+
+    const uploadResult =
+    await upload.json();
+
+    await fetch(
+
+        SERVER +
+        "/release" +
+
+        "?sw_version=" +
+        encodeURIComponent(version) +
+
+        "&firmware_file=" +
+        encodeURIComponent(
+            uploadResult.file
+        ),
+
+        {
+            method:"POST"
+        }
+    );
+
+    alert(
+        "Release Saved"
+    );
+}
 /* ==========================
    PENDING TBMS
 ========================== */
@@ -512,36 +607,6 @@ function logout(){
     window.location =
         "login.html";
 }
-
-async function loadPending(){
-
-    const response =
-    await fetch(
-        SERVER + "/pending"
-    );
-
-    const data =
-    await response.json();
-
-    document.getElementById(
-    "pendingCount"
-    ).innerText =
-    data.pending.length;
-
-    const div =
-    document.getElementById(
-        "pendingList"
-    );
-
-    div.innerHTML = "";
-
-    if(data.pending.length === 0){
-
-        div.innerHTML =
-        "No Pending Requests";
-
-        return;
-    }
 
     data.pending.forEach(vin=>{
 
@@ -572,9 +637,36 @@ async function loadPending(){
         </div>
         `;
     });
+
+
+async function loadRegisteredVINs(){
+
+    const response =
+    await fetch(
+        SERVER +
+        "/registered_tbms"
+    );
+
+    const tbms =
+    await response.json();
+
+    const select =
+    document.getElementById(
+        "vin"
+    );
+
+    select.innerHTML =
+    '<option value="">Select VIN</option>';
+
+    tbms.forEach(t=>{
+
+        select.innerHTML +=
+
+        `<option value="${t.vin}">
+            ${t.vin}
+        </option>`;
+    });
 }
-
-
 /* ==========================
    CONNECTED TBMS
 ========================== */
@@ -620,45 +712,6 @@ async function loadTBMs(){
         </div>
         `;
     });
-}
-
-
-/* ==========================
-   APPROVE TBM
-========================== */
-
-async function approveTBM(vin){
-
-    await fetch(
-        SERVER +
-        "/approve/" +
-        vin,
-        {
-            method:"POST"
-        }
-    );
-
-    loadPending();
-    loadTBMs();
-}
-
-
-/* ==========================
-   REJECT TBM
-========================== */
-
-async function rejectTBM(vin){
-
-    await fetch(
-        SERVER +
-        "/reject/" +
-        vin,
-        {
-            method:"POST"
-        }
-    );
-
-    loadPending();
 }
 
 
@@ -882,16 +935,10 @@ async function loadLogs(){
 /* ==========================
    AUTO REFRESH
 ========================== */
-
-loadPending();
 loadTBMs();
 loadLogs();
 loadCampaigns();
-
-setInterval(
-    loadPending,
-    1000
-);
+loadRegisteredVINs();
 
 setInterval(
     loadTBMs,
