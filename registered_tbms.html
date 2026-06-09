@@ -315,7 +315,12 @@ async function loadTBMs(){
             </td>
         
             <td>
-                ${new Date(t.added_on).toLocaleString()}
+                ${new Date(t.added_on).toLocaleString(
+                    "en-IN",
+                    {
+                        timeZone: "Asia/Kolkata"
+                    }
+                )}
             </td>
         
             <td>
