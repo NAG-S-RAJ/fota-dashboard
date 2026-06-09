@@ -10,132 +10,172 @@ Registered TBMs
 </title>
 
 <style>
-
 body{
-
-    font-family:
-    "Segoe UI";
-
+    font-family:"Segoe UI",sans-serif;
     background:#0b1220;
-
     color:white;
+    padding:30px;
+    margin:0;
+}
 
-    padding:20px;
+h1{
+    margin-bottom:20px;
+    font-size:32px;
+    color:#60a5fa;
 }
 
 .card{
-
     background:#111827;
-
     border:1px solid #1f2937;
-
-    border-radius:12px;
-
-    padding:20px;
-}
-
-#tbmTable{
-
-    width:100%;
-
-    border-collapse:collapse;
-
-    margin-top:20px;
-}
-
-#tbmTable th{
-
-    background:#1f2937;
-
-    color:#60a5fa;
-
-    text-align:left;
-
-    padding:12px;
-}
-
-#tbmTable td{
-
-    padding:12px;
-
-    border-top:1px solid #374151;
-}
-
-#tbmTable tr:hover{
-
-    background:#1f2937;
+    border-radius:16px;
+    padding:24px;
+    box-shadow:0 8px 24px rgba(0,0,0,0.35);
 }
 
 input{
-
     width:100%;
-
-    padding:12px;
-
-    margin-bottom:10px;
-
-    border-radius:8px;
-
+    box-sizing:border-box;
+    padding:14px;
+    margin-bottom:14px;
+    border-radius:10px;
     border:1px solid #374151;
-
     background:#1f2937;
-
     color:white;
+    font-size:14px;
+    transition:0.2s;
+}
+
+input:focus{
+    outline:none;
+    border-color:#60a5fa;
+    box-shadow:0 0 0 3px rgba(96,165,250,0.2);
 }
 
 button{
-
-    padding:10px 16px;
-
+    padding:11px 18px;
     border:none;
-
-    border-radius:8px;
-
+    border-radius:10px;
     cursor:pointer;
+    font-weight:600;
+    transition:0.25s;
+}
+
+button:hover{
+    transform:translateY(-1px);
 }
 
 .primary{
-
     background:#2563eb;
-
     color:white;
 }
 
-.table{
-
-    margin-top:20px;
+.primary:hover{
+    background:#3b82f6;
 }
 
-.row{
-
+.back-btn{
     background:#1f2937;
-
-    padding:12px;
-
-    border-radius:8px;
-
-    margin-bottom:10px;
+    color:white;
+    border:1px solid #374151;
 }
 
-</style>
+.back-btn:hover{
+    background:#374151;
+}
 
+.delete-btn{
+    background:#dc2626;
+    color:white;
+}
+
+.delete-btn:hover{
+    background:#ef4444;
+}
+
+.table-container{
+    background:#111827;
+    border:1px solid #1f2937;
+    border-radius:16px;
+    overflow:hidden;
+    box-shadow:0 8px 24px rgba(0,0,0,0.35);
+}
+
+#tbmTable{
+    width:100%;
+    border-collapse:collapse;
+}
+
+#tbmTable th{
+    background:#1f2937;
+    color:#60a5fa;
+    text-align:left;
+    padding:16px;
+    font-size:14px;
+    letter-spacing:0.5px;
+}
+
+#tbmTable td{
+    padding:16px;
+    border-top:1px solid #374151;
+}
+
+#tbmTable tbody tr:nth-child(even){
+    background:#151f31;
+}
+
+#tbmTable tbody tr:hover{
+    background:#1f2937;
+}
+
+.vin-badge{
+    background:#1e3a8a;
+    color:#93c5fd;
+    padding:6px 10px;
+    border-radius:999px;
+    font-size:13px;
+    font-weight:600;
+}
+
+.sw-badge{
+    background:#064e3b;
+    color:#6ee7b7;
+    padding:6px 10px;
+    border-radius:999px;
+    font-size:13px;
+    font-weight:600;
+}
+
+.page-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+}
+
+.subtitle{
+    color:#9ca3af;
+    margin-top:-10px;
+    margin-bottom:25px;
+}
+</style>
 </head>
 
 <body>
 
-<h1>
-Registered TBMs
-</h1>
+<div class="page-header">
+    <div>
+        <h1>Registered TBMs</h1>
+        <div class="subtitle">
+            Manage registered TBMs
+        </div>
+    </div>
 
-<button
-onclick="
-window.location=
-'index.html'
-">
-
-← Dashboard
-
-</button>
+    <button
+        class="back-btn"
+        onclick="window.location='index.html'">
+        ← Dashboard
+    </button>
+</div>
 
 <br><br>
 
@@ -161,6 +201,7 @@ Add TBM
 
 <br>
 
+<div class="table-container">
 <table id="tbmTable">
 
     <thead>
@@ -184,6 +225,7 @@ Add TBM
     </tbody>
 
 </table>
+</div>
 
 <script>
 
@@ -253,31 +295,35 @@ async function loadTBMs(){
         "tbmList"
     );
 
-    div.innerHTML = "";
+ div.innerHTML = "";
 
     data.forEach(t=>{
 
         div.innerHTML += `
         <tr>
         
-            <td>${t.vin}</td>
-        
-            <td>${t.sw_version}</td>
-        
-            <td>${t.added_on}</td>
+            <td>
+                <span class="vin-badge">
+                    ${t.vin}
+                </span>
+            </td>
         
             <td>
-            
+                <span class="sw-badge">
+                    ${t.sw_version}
+                </span>
+            </td>
+        
+            <td>
+                ${new Date(t.added_on).toLocaleString()}
+            </td>
+        
+            <td>
                 <button
-                onclick="
-                deleteTBM(
-                '${t.vin}'
-                )">
-            
-                Delete
-            
+                    class="delete-btn"
+                    onclick="deleteTBM('${t.vin}')">
+                    Delete
                 </button>
-            
             </td>
         
         </tr>
