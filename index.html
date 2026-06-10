@@ -6,13 +6,11 @@
 <script>
 
 if(
-    localStorage.getItem(
+    sessionStorage.getItem(
         "fota_logged_in"
     ) !== "true"
 ){
-
-    window.location =
-        "login.html";
+    window.location = "login.html";
 }
 
 </script>
@@ -505,7 +503,7 @@ async function deleteCampaign(id){
 
 function logout(){
 
-    localStorage.removeItem(
+    sessionStorage.removeItem(
         "fota_logged_in"
     );
 
