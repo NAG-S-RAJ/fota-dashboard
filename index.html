@@ -24,7 +24,20 @@ if(
 
 body{
     font-family:"Segoe UI",Arial,sans-serif;
-    background:#0b1220;
+    background:
+        radial-gradient(
+            circle at top left,
+            #1e3a8a,
+            transparent 40%
+        ),
+        radial-gradient(
+            circle at top right,
+            #0f766e,
+            transparent 40%
+        ),
+        #020617;
+
+    min-height:100vh;
     color:#e5e7eb;
 }
 
@@ -69,12 +82,33 @@ body{
     border:1px solid #1f2937;
     border-radius:12px;
     padding:20px;
+    position:relative;
+    overflow:hidden;
+}
+
+.kpi::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:4px;
+    background:
+        linear-gradient(
+            90deg,
+            #3b82f6,
+            #06b6d4
+        );
 }
 
 .kpiValue{
     font-size:34px;
     font-weight:700;
     color:#60a5fa;
+    min-height:48px;
+
+    display:flex;
+    align-items:center;
 }
 
 .kpiLabel{
@@ -102,10 +136,18 @@ body{
 ===================================== */
 
 .card{
-    background:#111827;
-    border:1px solid #1f2937;
-    border-radius:14px;
+    background:rgba(17,24,39,0.85);
+    backdrop-filter:blur(12px);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:18px;
     padding:20px;
+    box-shadow:
+        0 10px 25px rgba(0,0,0,0.3);
+    transition:all .25s ease;
+}
+
+.card:hover{
+    transform:translateY(-3px);
 }
 
 .card h2{
@@ -141,6 +183,11 @@ button{
     padding:10px 18px;
     cursor:pointer;
     font-weight:600;
+    transition:all .25s ease;
+}
+
+button:hover{
+    transform:translateY(-2px);
 }
 
 .primary{
@@ -170,6 +217,13 @@ button{
     background:#b91c1c;
 }
 
+.footer{
+    text-align:center;
+    color:#64748b;
+    padding:20px;
+    font-size:13px;
+}
+
 /* =====================================
    TBM CARDS
 ===================================== */
@@ -183,6 +237,12 @@ button{
     padding:8px 12px;
     margin-bottom:8px;
     font-size:13px;
+    transition:all .25s ease;
+}
+
+.campaignItem:hover{
+    border-color:#3b82f6;
+    transform:translateY(-1px);
 }
 
 /* =====================================
@@ -256,6 +316,49 @@ button{
 
     font-weight:600;
 }
+
+.statusContainer{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.statusText{
+    font-size:34px;
+    font-weight:700;
+    color:#60a5fa;
+    line-height:1;
+}
+
+.statusDot{
+    width:14px;
+    height:14px;
+    border-radius:50%;
+    background:#22c55e;
+
+    box-shadow:
+        0 0 10px #22c55e,
+        0 0 20px #22c55e;
+
+    animation:pulse 2s infinite;
+}
+
+@keyframes pulse{
+
+    0%{
+        transform:scale(1);
+    }
+
+    50%{
+        transform:scale(1.15);
+    }
+
+    100%{
+        transform:scale(1);
+    }
+
+}
+
 #logs{
     background:#020617;
     border:1px solid #334155;
@@ -363,11 +466,22 @@ button{
     </div>
 
     <div class="kpi">
-        <div class="kpiValue">ONLINE</div>
-        <div class="kpiLabel">
-            System Status
-        </div>
+
+    <div class="kpiValue statusContainer">
+
+        <span class="statusDot"></span>
+
+        <span class="statusText">
+            ONLINE
+        </span>
+
     </div>
+
+    <div class="kpiLabel">
+        System Status
+    </div>
+
+</div>
 
 </div>
 
@@ -402,6 +516,11 @@ No Connected TBMs
 <div class="card">
 
 <h2>Create Campaign</h2>
+
+<input
+type="text"
+id="campaignId"
+placeholder="Campaign ID">
 
 <input
 type="text"
@@ -464,6 +583,10 @@ No Campaigns
 
     <div id="logs"></div>
 
+</div>
+
+<div class="footer">
+    Bosch Engineering Demo • FOTA Platform v1.0
 </div>
 
 <script>
@@ -666,6 +789,11 @@ async function rejectTBM(vin){
 
 async function createCampaign(){
 
+    const campaignId =
+    document.getElementById(
+        "campaignId"
+    ).value.trim();
+    
     const vin =
     document.getElementById(
         "vin"
@@ -682,6 +810,7 @@ async function createCampaign(){
     ).files[0];
 
     if(
+        !campaignId ||
         !vin ||
         !campaign ||
         !file
@@ -730,14 +859,16 @@ async function createCampaign(){
         const campaignUrl =
             SERVER +
             "/campaign" +
-            "?vin=" +
+            "?campaign_id=" +
+            encodeURIComponent(campaignId) +
+            "&vin=" +
             encodeURIComponent(vin) +
             "&campaign_name=" +
             encodeURIComponent(campaign) +
             "&firmware_file=" +
             encodeURIComponent(
                 firmwareFile
-            );
+        );
 
         const response =
         await fetch(
@@ -818,11 +949,13 @@ async function loadCampaigns(){
                 <div>
                 
                     <b>${c.campaign_name}</b><br>
-                
+
+                    Campaign ID : ${c.campaign_id}<br>
+                                    
                     VIN : ${c.vin}<br>
-                
+                                    
                     Firmware : ${c.firmware_file}<br>
-                
+                                    
                     Status : ${c.status}
                 
                 </div>
